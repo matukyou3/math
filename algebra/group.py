@@ -18,7 +18,10 @@ class Group(ABC):
     def inverse(self, a):
         pass
     
+class FiniteGroup(Group):
+    @property
+    @abstractmethod
     def elements(self):
         """有限群の場合のみ列挙可能"""
-        raise NotImplementedError("無限群は列挙不可能")
+        pass
     

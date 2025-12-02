@@ -1,6 +1,6 @@
 from itertools import product
 import math
-from algebra import Group
+from algebra import Group, FiniteGroup, GroupElement
 
 # s：鏡映
 # r：回転
@@ -8,7 +8,7 @@ from algebra import Group
 # S^2 = e
 # RS = SR^(-1)
 
-class DihedralElement:
+class DihedralElement(GroupElement):
     def __init__(self, r=0, s=False, n=1):
         self.r = r % n
         self.s = s
@@ -29,12 +29,17 @@ class DihedralElement:
     def __hash__(self):
         return hash((self.r, self.s, self.n))
     
-class DihedralGroup(Group):
+class DihedralGroup(FiniteGroup):
     # 群構造定義
     def __init__(self, n):
         self.n = n
+        elems = []
+        for k in range(self.n):
+            elems.append(DihedralElement(k, False, self.n))
+        for k in range(self.n):
+            elems.append(DihedralElement(k, True, self.n))
+        self._elements = elems
 
-        # 元書き下し
     
     # 生成元
     def generators(self):
@@ -75,13 +80,9 @@ class DihedralGroup(Group):
             return DihedralElement(a.r, True, n)
     
     # 元書き下し
+    @property
     def elements(self):
-        elements = []
-        for k in range(self.n):
-            elements.append(DihedralElement(k, False, self.n))
-        for k in range(self.n):
-            elements.append(DihedralElement(k, True, self.n))
-        return elements
+        return self._elements
 
 
     # 共役 φ_g(x) → g x g^(-1)
