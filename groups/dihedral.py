@@ -1,6 +1,4 @@
-from itertools import product
-import math
-from algebra import Group, FiniteGroup, GroupElement
+from algebra import FiniteGroup, GroupElement
 
 # s：鏡映
 # r：回転
@@ -41,15 +39,13 @@ class DihedralGroup(FiniteGroup):
     # 群構造定義
     def __init__(self, n):
         self.n = n
-        elems = []
         self.r_gen = DihedralElement(1, False, n)
         self.s_gen = DihedralElement(0, True, n)
 
-        for k in range(self.n):
-            elems.append(DihedralElement(k, False, self.n, r_gen=self.r_gen, s_gen=self.s_gen))
-        for k in range(self.n):
-            elems.append(DihedralElement(k, True, self.n, r_gen=self.r_gen, s_gen=self.s_gen))
-        self._elements = elems
+        rot_elems = [DihedralElement(k, False, n, r_gen=self.r_gen, s_gen=self.s_gen) for k in range(n)]
+        refl_elems = [DihedralElement(k, True, n, r_gen=self.r_gen, s_gen=self.s_gen) for k in range(n)]
+        self._elements = set(rot_elems + refl_elems)
+
     
     # 生成元
     @property
@@ -92,8 +88,4 @@ class DihedralGroup(FiniteGroup):
     @property
     def elements(self):
         return self._elements
-
-
-    # 共役 φ_g(x) → g x g^(-1)
-    def conjugate(self, g, x):
-        return self.multiply(self.multiply(g, x), self.inverse(g))
+    
