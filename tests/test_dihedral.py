@@ -3,6 +3,7 @@
 import pytest
 from groups.dihedral import DihedralGroup, DihedralElement
 import math
+from algebra.ops import *
 
 
 def test_elements_count():
@@ -110,3 +111,25 @@ def test_equality_and_hash():
     assert a == b
     assert hash(a) == hash(b)
     assert a != c
+
+
+def test_center_dihedral_even():
+    G = DihedralGroup(10)
+    Z = center(G)
+
+    r_half = DihedralElement(G.n // 2, False, G.n, r_gen=G.r_gen, s_gen=G.s_gen)
+    assert Z == {G.identity, r_half}
+
+
+def test_center_dihedral_odd():
+    G = DihedralGroup(9)
+    Z = center(G)
+    assert Z == {G.identity}
+
+# S R S = R^(-1)
+def test_conjugate_dihedral():
+    G = DihedralGroup(10)
+    r = DihedralElement(6, False, 10, r_gen=G.r_gen, s_gen=G.s_gen)
+    s = DihedralElement(0, True, 10, r_gen=G.r_gen, s_gen=G.s_gen)
+    res = conjugate(G, s, r)
+    assert res == G.inverse(r)

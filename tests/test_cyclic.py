@@ -2,6 +2,7 @@
 
 import pytest
 from groups.cyclic import CyclicGroup, CyclicElement
+from algebra.ops import *
 import math
 
 
@@ -94,3 +95,22 @@ def test_equality_and_hash():
     assert a == b
     assert hash(a) == hash(b)
     assert a != c
+
+def test_conjugate():
+    G = CyclicGroup(8)
+    for g in G.elements:
+        for x in G.elements:
+            assert conjugate(G, g, x) == x
+
+
+def test_conjugation_map():
+    G = CyclicGroup(10)
+    g = pick_one(G)
+    phi = conjugation_map(G, g)
+    for x in G.elements:
+        assert phi(x) == x
+
+
+def test_center():
+    G = CyclicGroup(11)
+    assert center(G) == G.elements

@@ -4,15 +4,10 @@ from itertools import product
 
 
 def Inn(G):
-    inn_list = []
-    for g in G.elements:
-        mapping = conjugation_map(G, g)
-        if not any(mapping == m for m in inn_list):
-            inn_list.append(mapping)
-    return inn_list
+    return {conjugation_map(G, g) for g in G.elements}
 
 def Auto(G):
-    autos = []
+    autos = set()
     gens = G.generators
     elems = list(G.elements)
 
@@ -35,9 +30,6 @@ def Auto(G):
 
         phi = GroupHom(G, G, mapping)
 
-        if phi.is_automorphism():
-            # 重複チェック
-            if not any(phi.mapping == a.mapping for a in autos):
-                autos.append(phi)
-
+        if phi.is_isomorphism():
+            autos.add(phi)
     return autos

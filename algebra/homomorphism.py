@@ -8,8 +8,17 @@ class GroupHom:
         return self.mapping[x]
     
     def __repr__(self):
-        items = ", ".join(f"{k}->{v}" for k, v in self.mapping.items())
-        return f"GroupHom({{{items}}})"
+        pairs = ", ".join(f"{repr(k)} -> {repr(v)}" for k, v in self.mapping.items())
+        return f"GroupHom({{{pairs}}})"
+    
+    def __eq__(self, other):
+        if not isinstance(other, GroupHom):
+            return False
+        return all(self(x) == other(x) for x in self.H.elements)
+
+    def __hash__(self):
+        return hash(tuple((x, self(x)) for x in self.H.elements))
+
     
     def is_homorphism(self):
         """φ(xy)=φ(x)φ(y)"""
@@ -33,9 +42,9 @@ class GroupHom:
         return self.image == set(self.H.elements)
     
     def image_size(self):
-        return len(self.image())
+        return len(self.image)
 
-    def is_automorphism(self):
+    def is_isomorphism(self):
         return self.is_homorphism and self.is_epi()
 
 
